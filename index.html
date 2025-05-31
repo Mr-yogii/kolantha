@@ -12,23 +12,6 @@
       box-sizing: border-box;
     }
 
-
-    .shape-left-15 { left: 15%; }
-    .shape-left-25 { left: 25%; }
-    .shape-left-35 { left: 35%; }
-    .shape-left-50 { left: 50%; }
-    .shape-left-65 { left: 65%; }
-    .shape-left-75 { left: 75%; }
-    .shape-left-85 { left: 85%; }
-
-    .delay-1s { animation-delay: 1s !important; }
-    .delay-2s { animation-delay: 2s !important; }
-    .delay-3s { animation-delay: 3s !important; }
-    .delay-4s { animation-delay: 4s !important; }
-    .delay-5s { animation-delay: 5s !important; }
-    .delay-6s { animation-delay: 6s !important; }
-    .delay-7s { animation-delay: 7s !important; }
-
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       font-family: 'Poppins', sans-serif;
@@ -198,11 +181,10 @@
       60% {
         transform: rotate(-10deg);
       }
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transform-style: preserve-3d;
-      perspective: 1000px;
+      100% {
+        transform: translate(100px, -10vh) rotate(360deg) scale(1.2);
+        opacity: 0;
+      }
     }
 
     .content {
@@ -423,19 +405,17 @@
       opacity: 0;
       border-radius: 100%;
       transform: scale(1, 1) translate(-50%, -50%);
-mory-container {
-      margin-top: 30px;
-      display: none;
-      animation: fadeInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      background: rgba(255,255,255,0.7);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.3);
+      transform-origin: 50% 50%;
     }
- 0.5;
+
+    .close-image-btn:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
       }
       100% {
         transform: scale(20, 20);
@@ -593,6 +573,40 @@ mory-container {
       50% { transform: translateY(-5px); }
     }
 
+    .music-permission {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.9);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      max-width: 300px;
+      text-align: center;
+      display: none;
+    }
+
+    .music-permission p {
+      margin-bottom: 10px;
+    }
+
+    .music-permission button {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .music-permission button:hover {
+      background: #ff4757;
+      transform: translateY(-2px);
+    }
+
     @media (max-width: 768px) {
       .content {
         padding: 20px;
@@ -615,29 +629,29 @@ mory-container {
         max-height: 50vh;
       }
       
-    .fab {
-      display: flex;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
-      background: #ff6b6b;
-      border-radius: 50%;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 24px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 100;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+      .fab {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        left: auto;
+        margin: 0;
+        width: 50px;
+        height: 50px;
+        justify-content: center;
+        align-items: center;
+      }
 
       .music-control, .greeting {
         width: 40px;
         height: 40px;
         font-size: 16px;
+      }
+
+      .music-permission {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: none;
       }
     }
 
@@ -695,14 +709,21 @@ mory-container {
       font-size: 14px;
       pointer-events: none;
       z-index: 100;
-  opacity: 0;
-  /* tooltip arrow */
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent rgba(0,0,0,0.7) transparent;
-}
+      opacity: 0;
+      transition: opacity 0.3s;
+      transform: translateY(10px);
+    }
+
+    .area-tooltip::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent rgba(0,0,0,0.7) transparent;
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -723,8 +744,10 @@ mory-container {
   <div class="music-control" id="music-control">
     <i class="fas fa-music"></i>
   </div>
-  <audio id="bg-music" loop>
+  
+  <audio id="bg-music" loop preload="auto">
     <source src="_Monday_Nee_Mundam_.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
   <div class="fab" id="fab">👆</div>
@@ -759,33 +782,76 @@ mory-container {
     </div>
   </div>
 
+  <div class="music-permission" id="music-permission">
+    <p>Allow background music for better experience?</p>
+    <button id="allow-music">Yes, play music</button>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/image-map-resizer@1.0.10/js/imageMapResizer.min.js"></script>
 
   <script>
-    window.addEventListener('load', function() {
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize image map
       if (typeof imageMapResize === 'function') {
         imageMapResize();
       }
       
+      // Show FAB on mobile
       if ('ontouchstart' in window) {
         document.getElementById('fab').style.display = 'flex';
       }
 
+      // Music elements
       const music = document.getElementById('bg-music');
       const musicControl = document.getElementById('music-control');
+      const musicPermission = document.getElementById('music-permission');
+      const allowMusicBtn = document.getElementById('allow-music');
       let isPlaying = false;
 
-      musicControl.addEventListener('click', function() {
-        if (isPlaying) {
-          music.pause();
-          musicControl.innerHTML = '<i class="fas fa-music"></i>';
-        } else {
-          music.play();
-          musicControl.innerHTML = '<i class="fas fa-pause"></i>';
-        }
-        isPlaying = !isPlaying;
+      // Check if music was previously allowed
+      if(localStorage.getItem('musicAllowed') === 'true') {
+        musicPermission.style.display = 'none';
+      } else {
+        musicPermission.style.display = 'block';
+      }
+
+      // Handle music permission
+      allowMusicBtn.addEventListener('click', function() {
+        localStorage.setItem('musicAllowed', 'true');
+        musicPermission.style.display = 'none';
+        music.volume = 0.3;
+        music.play().catch(e => console.log("Autoplay prevented:", e));
       });
 
+      // Music control button
+      musicControl.addEventListener('click', function() {
+        if (music.paused) {
+          music.play()
+            .then(() => {
+              musicControl.innerHTML = '<i class="fas fa-pause"></i>';
+              isPlaying = true;
+            })
+            .catch(error => {
+              console.log("Playback failed:", error);
+              musicPermission.style.display = 'block';
+            });
+        } else {
+          music.pause();
+          musicControl.innerHTML = '<i class="fas fa-music"></i>';
+          isPlaying = false;
+        }
+      });
+
+      // Initialize audio after first user interaction
+      document.body.addEventListener('click', function initAudio() {
+        if(localStorage.getItem('musicAllowed') === 'true') {
+          music.volume = 0.3;
+          music.play().catch(e => console.log("Autoplay prevented:", e));
+        }
+        document.body.removeEventListener('click', initAudio);
+      }, { once: true });
+
+      // Rotating greetings
       const greetings = [
         "En ulagam! ❤️",
         "Kolantha! 💖",
@@ -799,147 +865,153 @@ mory-container {
         currentGreeting = (currentGreeting + 1) % greetings.length;
         document.getElementById('greeting').textContent = greetings[currentGreeting];
       }, 3000);
-    });
 
-    const img = document.getElementById('love-map');
-    img.addEventListener('click', () => {
-      img.classList.add('clicked');
-      setTimeout(() => {
-        img.classList.remove('clicked');
-      }, 1000);
-    });
-
-    const memories = {
-        brother: {
-            title: "En Thangachi",
-            text: "Nee enoda blood illa, aana heart la romba close."
-        },
-        sister: {
-            title: "Un Anna",
-            text: "Una mari enaku pesa theriyathu but belive me I really love you "
-        },
-        family: {
-            title: "my world",
-            text: "Enoda ulagam nee, ya en life la vantha , addict akana ena ,yen ? Hate you!!!"
-        },
-        memory1: {
-            title: "1st pic la",
-            text: "oru piic edka evolo kastam "
-        },
-        memory2: {
-            title: "2nd pic ",
-            text: "Ama unkuda la pic edukalanu yaru alutha , simple waste "
-        },
-        memory3: {
-            title: "3rd pic",
-            text: "en ah sola , onum illa unaku venum na ethavathu sollikoo "
-        },
-        advice: {
-            title: "neyabagam vachikoo",
-            text: "Blood relation illa naalum, bond break aagathu. Epdi sanda potalum, evalo dhooram poitalum, naan epovume un kooda irupen!"
-        }
-    };
-
-    document.querySelectorAll('area').forEach(area => {
-      area.addEventListener('click', function(e) {
-        e.preventDefault();
-        const memoryType = this.getAttribute('data-memory');
-        const imageSrc = this.getAttribute('data-image');
-        const revealedImage = document.getElementById('revealed-image');
-        
-        revealedImage.src = imageSrc;
-        revealedImage.className = 'revealed-image';
-        
-        if (memoryType === 'sister') {
-          revealedImage.classList.add('heart-frame');
-        }
-        
-        document.getElementById('revealed-image-container').style.display = 'block';
-        showMemory(memoryType);
-        createConfetti();
-        
-        this.style.animation = 'areaClick 0.5s';
+      // Click animation for main image
+      const img = document.getElementById('love-map');
+      img.addEventListener('click', () => {
+        img.classList.add('clicked');
         setTimeout(() => {
-          this.style.animation = '';
-        }, 500);
+          img.classList.remove('clicked');
+        }, 1000);
       });
-    });
 
-    document.getElementById('close-btn').addEventListener('click', function() {
-      document.getElementById('memory-container').style.display = 'none';
-    });
-    
-    document.getElementById('close-image-btn').addEventListener('click', function() {
-      document.getElementById('revealed-image-container').style.display = 'none';
-    });
+      // Memories data
+      const memories = {
+          brother: {
+              title: "En Thangachi",
+              text: "Nee enoda blood illa, aana heart la romba close."
+          },
+          sister: {
+              title: "Un Anna",
+              text: "Una mari enaku pesa theriyathu but belive me I really love you "
+          },
+          family: {
+              title: "my world",
+              text: "Enoda ulagam nee, ya en life la vantha , addict akana ena ,yen ? Hate you!!!"
+          },
+          memory1: {
+              title: "1st pic la",
+              text: "oru piic edka evolo kastam "
+          },
+          memory2: {
+              title: "2nd pic ",
+              text: "Ama unkuda la pic edukalanu yaru alutha , simple waste "
+          },
+          memory3: {
+              title: "3rd pic",
+              text: "en ah sola , onum illa unaku venum na ethavathu sollikoo "
+          },
+          advice: {
+              title: "neyabagam vachikoo",
+              text: "Blood relation illa naalum, bond break aagathu. Epdi sanda potalum, evalo dhooram poitalum, naan epovume un kooda irupen!"
+          }
+      };
 
-    document.getElementById('fab').addEventListener('click', function() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+      // Handle area clicks
+      document.querySelectorAll('area').forEach(area => {
+        area.addEventListener('click', function(e) {
+          e.preventDefault();
+          const memoryType = this.getAttribute('data-memory');
+          const imageSrc = this.getAttribute('data-image');
+          const revealedImage = document.getElementById('revealed-image');
+          
+          revealedImage.src = imageSrc;
+          revealedImage.className = 'revealed-image';
+          
+          if (memoryType === 'sister') {
+            revealedImage.classList.add('heart-frame');
+          }
+          
+          document.getElementById('revealed-image-container').style.display = 'block';
+          showMemory(memoryType);
+          createConfetti();
+          
+          this.style.animation = 'areaClick 0.5s';
+          setTimeout(() => {
+            this.style.animation = '';
+          }, 500);
+        });
       });
-    });
 
-    function showMemory(type) {
-      const container = document.getElementById('memory-container');
-      const title = document.getElementById('memory-title');
-      const text = document.getElementById('memory-text');
+      // Close buttons
+      document.getElementById('close-btn').addEventListener('click', function() {
+        document.getElementById('memory-container').style.display = 'none';
+      });
       
-      title.textContent = memories[type].title;
-      text.textContent = memories[type].text;
-      container.style.display = 'block';
-      
-      container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+      document.getElementById('close-image-btn').addEventListener('click', function() {
+        document.getElementById('revealed-image-container').style.display = 'none';
+      });
 
-    function createConfetti() {
-      const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#a5ffd6', '#ffa5b6'];
-      const emojis = ['❤️', '⭐', '😊', '👫', '🎉'];
-      
-      for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
+      // FAB button
+      document.getElementById('fab').addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // Show memory function
+      function showMemory(type) {
+        const container = document.getElementById('memory-container');
+        const title = document.getElementById('memory-title');
+        const text = document.getElementById('memory-text');
         
-        if (i % 3 === 0) {
-          confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-          confetti.style.fontSize = Math.random() * 20 + 10 + 'px';
-          confetti.style.background = 'transparent';
+        title.textContent = memories[type].title;
+        text.textContent = memories[type].text;
+        container.style.display = 'block';
+        
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // Confetti effect
+      function createConfetti() {
+        const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#a5ffd6', '#ffa5b6'];
+        const emojis = ['❤️', '⭐', '😊', '👫', '🎉'];
+        
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          
+          if (i % 3 === 0) {
+            confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            confetti.style.fontSize = Math.random() * 20 + 10 + 'px';
+            confetti.style.background = 'transparent';
+          } else {
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = Math.random() * 10 + 5 + 'px';
+          }
+          
+          confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => {
+            confetti.remove();
+          }, 5000);
+        }
+      }
+
+      // Tooltip for areas
+      const tooltip = document.createElement('div');
+      tooltip.className = 'area-tooltip';
+      document.body.appendChild(tooltip);
+      
+      document.addEventListener('mousemove', function(e) {
+        if (e.target.tagName === 'AREA') {
+          const title = e.target.getAttribute('title');
+          if (title) {
+            tooltip.textContent = title;
+            tooltip.style.opacity = '1';
+            tooltip.style.left = e.pageX + 'px';
+            tooltip.style.top = (e.pageY - 40) + 'px';
+          }
         } else {
-          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-          confetti.style.width = Math.random() * 10 + 5 + 'px';
-          confetti.style.height = Math.random() * 10 + 5 + 'px';
+          tooltip.style.opacity = '0';
         }
-        
-        confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
-        confetti.style.animationDelay = Math.random() * 0.5 + 's';
-        document.body.appendChild(confetti);
-        
-        setTimeout(() => {
-          confetti.remove();
-        }, 5000);
-      }
-    }
-
-    const mapContainer = document.querySelector('.map-container');
-    const tooltip = document.createElement('div');
-    tooltip.className = 'area-tooltip';
-    document.body.appendChild(tooltip);
-    
-    document.addEventListener('mousemove', function(e) {
-      if (e.target.tagName === 'AREA') {
-        const title = e.target.getAttribute('title');
-        if (title) {
-          tooltip.textContent = title;
-          tooltip.style.opacity = '1';
-          tooltip.style.left = e.pageX + 'px';
-          tooltip.style.top = (e.pageY - 40) + 'px';
-        }
-      } else {
-        tooltip.style.opacity = '0';
-      }
+      });
     });
   </script>
-
 </body>
 </html>
